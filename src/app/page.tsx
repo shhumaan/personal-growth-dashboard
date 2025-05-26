@@ -199,30 +199,34 @@ export default function Dashboard() {
             >
               {activeSession === 'morning' && (
                 <MorningForm
-                  data={currentEntry || {}}
-                  onComplete={(data) => handleSessionComplete('morning', data)}
-                  onCancel={handleFormClose}
+                  onSubmit={(data) => handleSessionComplete('morning', data)}
+                  onClose={handleFormClose}
+                  initialData={currentEntry || {}}
                 />
               )}
               {activeSession === 'midday' && (
                 <MiddayForm
-                  data={currentEntry || {}}
-                  onComplete={(data) => handleSessionComplete('midday', data)}
-                  onCancel={handleFormClose}
+                  onSubmit={(data) => handleSessionComplete('midday', data)}
+                  onClose={handleFormClose}
+                  initialData={currentEntry || {}}
                 />
               )}
               {activeSession === 'evening' && (
                 <EveningForm
-                  data={currentEntry || {}}
-                  onComplete={(data) => handleSessionComplete('evening', data)}
-                  onCancel={handleFormClose}
+                  onSubmit={(data) => handleSessionComplete('evening', data)}
+                  onClose={handleFormClose}
+                  initialData={currentEntry || {}}
                 />
               )}
               {activeSession === 'bedtime' && (
                 <BedtimeForm
-                  data={currentEntry || {}}
-                  onComplete={(data) => handleSessionComplete('bedtime', data)}
-                  onCancel={handleFormClose}
+                  onSubmit={(data) => handleSessionComplete('bedtime', data)}
+                  onClose={handleFormClose}
+                  initialData={{
+                    sleep_time: currentEntry?.sleep_time || '',
+                    money_stress_level: currentEntry?.money_stress_level || 'None',
+                    notes_bedtime: currentEntry?.notes_bedtime || ''
+                  }}
                 />
               )}
             </motion.div>
@@ -300,7 +304,12 @@ export default function Dashboard() {
           
           {/* Weekly Stats */}
           {weeklySummary && (
-            <DashboardStats weeklySummary={weeklySummary} currentStreak={currentStreak} />
+            <DashboardStats 
+              todayProgress={getCompletionPercentage()}
+              streakDays={currentStreak}
+              weeklyAverage={weeklySummary.avg_completion}
+              totalEntries={weeklySummary.total_entries}
+            />
           )}
         </div>
         
@@ -344,7 +353,10 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="pb-4">
               {chartData && chartData.length > 0 ? (
-                <ProgressChart data={chartData} />
+                <ProgressChart 
+                  data={chartData} 
+                  title="Weekly Progress" 
+                />
               ) : (
                 <div className="h-[200px] flex items-center justify-center text-gray-500 dark:text-gray-400">
                   <p>Not enough data yet. Check back soon!</p>
@@ -397,7 +409,7 @@ export default function Dashboard() {
       </div>
       
       {/* Show demo mode overlay if active */}
-      {isDemoMode && <DemoMode />}
+      {isDemoMode && <DemoMode onClose={() => setIsDemoMode(false)} />}
     </main>
   );
 }
