@@ -199,23 +199,23 @@ export default function Dashboard() {
             >
               {activeSession === 'morning' && (
                 <MorningForm
-                  onSubmit={(data) => handleSessionComplete('morning', data)}
-                  onClose={handleFormClose}
-                  initialData={currentEntry || {}}
+                  data={currentEntry || {}}
+                  onComplete={(data) => handleSessionComplete('morning', data)}
+                  onCancel={handleFormClose}
                 />
               )}
               {activeSession === 'midday' && (
                 <MiddayForm
-                  onSubmit={(data) => handleSessionComplete('midday', data)}
-                  onClose={handleFormClose}
-                  initialData={currentEntry || {}}
+                  data={currentEntry || {}}
+                  onComplete={(data) => handleSessionComplete('midday', data)}
+                  onCancel={handleFormClose}
                 />
               )}
               {activeSession === 'evening' && (
                 <EveningForm
-                  onSubmit={(data) => handleSessionComplete('evening', data)}
-                  onClose={handleFormClose}
-                  initialData={currentEntry || {}}
+                  data={currentEntry || {}}
+                  onComplete={(data) => handleSessionComplete('evening', data)}
+                  onCancel={handleFormClose}
                 />
               )}
               {activeSession === 'bedtime' && (
