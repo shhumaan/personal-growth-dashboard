@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../ui/card
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { CustomSlider } from '../ui/slider';
-import { eveningSessionSchema, EveningSessionData } from '../../lib/validations';
+import { eveningSessionSchema, EveningSessionData } from '@/lib/validations';
 import { Sunset, Heart, Frown, Dumbbell, Loader2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { DailyEntry } from '../../types';
+import { DailyEntry } from '@/types';
 
 interface EveningFormProps {
   data: Partial<DailyEntry>;
@@ -234,18 +234,26 @@ const EveningForm: React.FC<EveningFormProps> = ({
               <Button
                 type="button"
                 variant="outline"
-                onClick={onClose}
+                onClick={onCancel}
                 className="flex-1"
                 disabled={isSubmitting}
               >
+                <XCircle className="h-4 w-4 mr-1" />
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
+                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Saving...' : 'Complete Session'}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>Complete Session</>
+                )}
               </Button>
             </div>
           </form>

@@ -8,10 +8,10 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { CustomSlider } from '../ui/slider';
-import { morningSessionSchema, MorningSessionData } from '../../lib/validations';
+import { morningSessionSchema, MorningSessionData } from '@/lib/validations';
 import { Sunrise, Coffee, Target, Heart, Loader2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { DailyEntry } from '../../types';
+import { DailyEntry } from '@/types';
 
 interface MorningFormProps {
   data: Partial<DailyEntry>;

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
-import { bedtimeSessionSchema, BedtimeSessionData } from '../../lib/validations';
+import { bedtimeSessionSchema, BedtimeSessionData } from '@/lib/validations';
 import { Moon, DollarSign, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 

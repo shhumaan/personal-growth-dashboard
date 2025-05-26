@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../ui/card
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 import { CustomSlider } from '../ui/slider';
-import { middaySessionSchema, MiddaySessionData } from '../../lib/validations';
+import { middaySessionSchema, MiddaySessionData } from '@/lib/validations';
 import { Sun, Briefcase, BookOpen, AlertTriangle, Loader2, XCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { DailyEntry } from '../../types';
+import { DailyEntry } from '@/types';
 
 interface MiddayFormProps {
   data: Partial<DailyEntry>;
