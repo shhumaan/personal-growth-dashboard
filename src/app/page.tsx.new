@@ -1,0 +1,406 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useAppStore } from '../lib/store';
+import { StatsCard } from '../components/dashboard/stats-card';
+import { ProgressChart } from '../components/dashboard/progress-chart';
+import { SessionCard } from '../components/dashboard/session-card';
+import { HeatmapCalendar } from '../components/dashboard/heatmap-calendar';
+import { DashboardStats } from '../components/dashboard/dashboard-stats';
+import { Onboarding } from '../components/onboarding';
+import { DemoMode } from '../components/demo-mode';
+import { ProgressRing } from '../components/ui/progress-ring';
+import { MorningForm } from '../components/forms/morning-form';
+import { MiddayForm } from '../components/forms/midday-form';
+import { EveningForm } from '../components/forms/evening-form';
+import { BedtimeForm } from '../components/forms/bedtime-form';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { motion, AnimatePresence } from 'framer-motion';
+import { format } from 'date-fns';
+import { 
+  Sunrise, 
+  Sun, 
+  Sunset, 
+  Moon, 
+  TrendingUp, 
+  Target, 
+  Brain, 
+  Heart,
+  Zap,
+  Calendar,
+  BarChart3,
+  Plus,
+  Settings,
+  Loader2
+} from 'lucide-react';
+import { formatDate, cn } from '../lib/utils';
+import { DailyEntry, WeeklySummary } from '../../types';
+
+const Dashboard: React.FC = () => {
+  const {
+    currentEntry,
+    entries,
+    weeklySummary,
+    chartData,
+    activeSession,
+    isLoading,
+    error,
+    currentStreak,
+    fetchTodayEntry,
+    updateEntry,
+    fetchWeeklySummary,
+    fetchCurrentStreak,
+    setActiveSession,
+  } = useAppStore();
+
+  const [showForm, setShowForm] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [isDemoMode, setIsDemoMode] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await fetchTodayEntry();
+        await fetchWeeklySummary();
+        await fetchCurrentStreak();
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        activateDemoMode();
+      }
+    };
+    
+    loadData();
+    
+    // Show onboarding for new users
+    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    if (!hasSeenOnboarding) {
+      setShowOnboarding(true);
+    }
+  }, []);
+
+  const activateDemoMode = () => {
+    setIsDemoMode(true);
+    // Demo mode logic will be implemented in DemoMode component
+  };
+
+  const handleSessionClick = (sessionId: string) => {
+    setActiveSession(sessionId);
+    setShowForm(true);
+  };
+
+  const handleFormClose = () => {
+    setShowForm(false);
+    setActiveSession(null);
+  };
+
+  const handleSessionComplete = async (sessionId: string, data: Partial<DailyEntry>) => {
+    await updateEntry(data);
+    setShowForm(false);
+    setActiveSession(null);
+  };
+
+  const getCompletionPercentage = (): number => {
+    if (!currentEntry) return 0;
+    return currentEntry.completion_percentage;
+  };
+
+  // Get emoji status based on daily_status
+  const getStatusEmoji = (): string => {
+    if (!currentEntry?.daily_status) return '🔴';
+    if (currentEntry.daily_status.includes('BEAST')) return '🟢';
+    if (currentEntry.daily_status.includes('PROGRESS')) return '🟡';
+    return '🔴';
+  };
+
+  // Session data for the four daily sessions
+  const sessions = [
+    {
+      id: 'morning',
+      title: 'Morning Power-Up',
+      icon: Sunrise,
+      description: 'Start your day with intention and clarity',
+      isCompleted: currentEntry?.session_1_morning || false,
+    },
+    {
+      id: 'midday',
+      title: 'Midday Reality Check',
+      icon: Sun,
+      description: 'Reset and refocus for the afternoon',
+      isCompleted: currentEntry?.session_2_midday || false,
+    },
+    {
+      id: 'evening',
+      title: 'Evening Deep Dive',
+      icon: Sunset,
+      description: 'Review progress and plan improvements',
+      isCompleted: currentEntry?.session_3_evening || false,
+    },
+    {
+      id: 'bedtime',
+      title: 'Bedtime Accountability',
+      icon: Moon,
+      description: 'Reflect on the day and prepare for tomorrow',
+      isCompleted: currentEntry?.session_4_bedtime || false,
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+        <span className="ml-2 text-lg">Loading your dashboard...</span>
+      </div>
+    );
+  }
+
+  if (error && !isDemoMode) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-6 max-w-md w-full backdrop-blur-xl">
+          <h2 className="text-xl font-semibold text-red-700 dark:text-red-400 mb-2">Connection Error</h2>
+          <p className="text-gray-700 dark:text-gray-300 mb-4">{error}</p>
+          <div className="flex gap-4">
+            <Button 
+              onClick={() => window.location.reload()} 
+              variant="outline"
+              className="flex-1"
+            >
+              Try Again
+            </Button>
+            <Button 
+              onClick={activateDemoMode} 
+              className="flex-1"
+            >
+              Use Demo Mode
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <main className="container mx-auto px-4 py-8 max-w-6xl">
+      {/* Modal Forms */}
+      <AnimatePresence>
+        {showForm && activeSession && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-auto"
+            >
+              {activeSession === 'morning' && (
+                <MorningForm
+                  data={currentEntry || {}}
+                  onComplete={(data) => handleSessionComplete('morning', data)}
+                  onCancel={handleFormClose}
+                />
+              )}
+              {activeSession === 'midday' && (
+                <MiddayForm
+                  data={currentEntry || {}}
+                  onComplete={(data) => handleSessionComplete('midday', data)}
+                  onCancel={handleFormClose}
+                />
+              )}
+              {activeSession === 'evening' && (
+                <EveningForm
+                  data={currentEntry || {}}
+                  onComplete={(data) => handleSessionComplete('evening', data)}
+                  onCancel={handleFormClose}
+                />
+              )}
+              {activeSession === 'bedtime' && (
+                <BedtimeForm
+                  data={currentEntry || {}}
+                  onComplete={(data) => handleSessionComplete('bedtime', data)}
+                  onCancel={handleFormClose}
+                />
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Show onboarding for new users */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <Onboarding onComplete={() => {
+            setShowOnboarding(false);
+            localStorage.setItem('hasSeenOnboarding', 'true');
+          }} />
+        )}
+      </AnimatePresence>
+
+      {/* Header with date and controls */}
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Growth Dashboard</h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            {format(new Date(), 'EEEE, MMMM d, yyyy')}
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => window.location.href = '/settings'}
+            className="flex items-center gap-1"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="hidden sm:inline">Settings</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Main Dashboard Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+        {/* Today's Progress Section */}
+        <Card className="md:col-span-8 overflow-hidden bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg border border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Today's Progress</span>
+              <span className="text-sm bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                {getStatusEmoji()} {currentEntry?.daily_status || 'No Status'}
+              </span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="relative">
+                <ProgressRing 
+                  progress={getCompletionPercentage()} 
+                  size={180} 
+                  strokeWidth={12}
+                  color={
+                    getCompletionPercentage() === 100 ? "#10B981" :
+                    getCompletionPercentage() > 50 ? "#F59E0B" : "#EF4444"
+                  }
+                />
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-3xl font-bold">{getCompletionPercentage()}%</span>
+                  <span className="text-sm text-gray-500">Completed</span>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4 flex-1">
+                {sessions.map((session) => (
+                  <SessionCard
+                    key={session.id}
+                    section={session}
+                    isActive={activeSession === session.id}
+                    isCompleted={session.isCompleted}
+                    onClick={() => handleSessionClick(session.id)}
+                    form={null}
+                  />
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Stats Section */}
+        <div className="md:col-span-4 grid grid-cols-2 gap-4">
+          <StatsCard
+            title="Streak"
+            value={currentStreak || 0}
+            subtitle="perfect days"
+            icon={TrendingUp}
+            color="blue"
+          />
+          <StatsCard
+            title="Job Apps"
+            value={currentEntry?.job_applications || 0}
+            subtitle="today"
+            icon={Target}
+            color="green"
+          />
+          <StatsCard
+            title="Study"
+            value={currentEntry?.study_hours || 0}
+            subtitle="hours"
+            icon={Brain}
+            color="purple"
+          />
+          <StatsCard
+            title="Energy"
+            value={currentEntry?.energy_rating || 0}
+            subtitle="/ 10"
+            icon={Zap}
+            color="orange"
+          />
+        </div>
+
+        {/* Weekly Progress Chart */}
+        <Card className="md:col-span-8 bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg border border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle>Weekly Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ProgressChart data={chartData} />
+          </CardContent>
+        </Card>
+
+        {/* Weekly Summary */}
+        <Card className="md:col-span-4 bg-white/70 dark:bg-gray-900/70 backdrop-blur-lg border border-gray-200 dark:border-gray-800">
+          <CardHeader>
+            <CardTitle>Weekly Summary</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {weeklySummary ? (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Avg. Completion:</span>
+                  <span className="font-medium">{Math.round(weeklySummary.avg_completion)}%</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Perfect Days:</span>
+                  <span className="font-medium">{weeklySummary.perfect_days}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Job Applications:</span>
+                  <span className="font-medium">{weeklySummary.total_job_apps}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Study Hours:</span>
+                  <span className="font-medium">{weeklySummary.total_study_hours}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Gym Sessions:</span>
+                  <span className="font-medium">{weeklySummary.gym_sessions}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">Avg. Mood:</span>
+                  <span className="font-medium">{Math.round(weeklySummary.avg_mood)}/10</span>
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                No weekly data available yet
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Demo Mode disclaimer if active */}
+      {isDemoMode && (
+        <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+          <p className="text-blue-700 dark:text-blue-400 text-center">
+            <strong>Demo Mode Active:</strong> You're viewing sample data. To connect your own Supabase database, update your environment variables.
+          </p>
+        </div>
+      )}
+    </main>
+  );
+};
+
+export default Dashboard;
