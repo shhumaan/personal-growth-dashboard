@@ -230,7 +230,7 @@ export const useAppStore = create<StoreState>()(
               entries: demoData.entries,
               weeklySummary: demoData.weeklySummary,
               currentStreak: demoData.currentStreak,
-              chartData: demoData.entries.slice(0, 30).map((entry, index) => ({
+              chartData: demoData.entries.slice(0, 30).map((entry) => ({
                 date: format(new Date(entry.date), 'MMM d'),
                 completion: entry.completion_percentage,
                 mood: entry.emotional_state ? entry.emotional_state * 10 : 0,
@@ -294,7 +294,7 @@ export const useAppStore = create<StoreState>()(
             .reverse();
             
           set({ chartData });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('Error fetching today entry:', err);
           set({ error: handleSupabaseError(err).error });
         } finally {
@@ -368,7 +368,7 @@ export const useAppStore = create<StoreState>()(
           
           // Refresh entry from database to get auto-calculated fields
           await get().fetchTodayEntry();
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('Error updating entry:', err);
           set({ error: handleSupabaseError(err).error });
         } finally {
@@ -392,7 +392,7 @@ export const useAppStore = create<StoreState>()(
           if (error) throw error;
           
           set({ weeklySummary: data[0] as WeeklySummary });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('Error fetching weekly summary:', err);
           set({ error: handleSupabaseError(err).error });
         } finally {
@@ -416,7 +416,7 @@ export const useAppStore = create<StoreState>()(
           if (error) throw error;
           
           set({ currentStreak: data as number });
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('Error fetching streak:', err);
           set({ error: handleSupabaseError(err).error });
         } finally {
@@ -499,7 +499,7 @@ export const useAppStore = create<StoreState>()(
               }
             }));
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('Error updating achievements:', err);
         }
       },
@@ -528,7 +528,7 @@ export const useAppStore = create<StoreState>()(
             
             if (error) throw error;
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error('Error updating reminder settings:', err);
         }
       },

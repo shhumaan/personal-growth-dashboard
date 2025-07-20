@@ -7,9 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { 
   Mail, 
-  Bell, 
   Clock, 
-  Settings, 
   Check,
   X,
   Calendar,
@@ -55,7 +53,7 @@ export const EmailSettings: React.FC<EmailSettingsProps> = ({
     saveEmailSettings(userId, settings);
   }, [settings, userId]);
 
-  const handleSettingChange = (key: keyof EmailSettings, value: any) => {
+  const handleSettingChange = (key: keyof EmailSettings, value: string | boolean) => {
     setSettings(prev => ({
       ...prev,
       [key]: value

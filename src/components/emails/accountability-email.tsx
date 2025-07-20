@@ -5,7 +5,6 @@ interface AccountabilityEmailProps {
   familyGoal: string;
   missedDays: number;
   daysRemaining: number;
-  currentStreak: number;
   severity: 'gentle' | 'firm' | 'harsh' | 'brutal';
 }
 
@@ -14,7 +13,6 @@ export function AccountabilityEmail({
   familyGoal,
   missedDays,
   daysRemaining,
-  currentStreak,
   severity
 }: AccountabilityEmailProps) {
   
@@ -61,6 +59,7 @@ export function AccountabilityEmail({
 
   return (
     <html>
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <style>{`
           body { 
@@ -274,7 +273,7 @@ export function AccountabilityEmail({
               YOU PROMISED THEM:
             </div>
             <div className="family-goal">
-              "{familyGoal}"
+              &quot;{familyGoal}&quot;
             </div>
             <div className="family-question">
               Are you keeping that promise?

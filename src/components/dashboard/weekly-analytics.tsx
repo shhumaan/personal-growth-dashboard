@@ -1,11 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { BarChart3, TrendingUp, TrendingDown, Calendar, Target, Brain, Heart, Zap, Clock } from 'lucide-react';
+import { BarChart3, TrendingUp, TrendingDown, Target, Brain, Heart, Zap, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 interface WeeklyData {
   week: string;
@@ -121,7 +119,7 @@ export function WeeklyAnalytics({ className = '' }: WeeklyAnalyticsProps) {
     title: string;
     value: number;
     unit?: string;
-    icon: any;
+    icon: React.ComponentType<{ className?: string }>;
     current: number;
     previous?: number;
     color?: string;

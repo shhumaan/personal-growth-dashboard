@@ -9,7 +9,7 @@ interface Achievement {
   id: string;
   title: string;
   description: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   color: string;
   bgColor: string;
   requirement: number;
@@ -45,7 +45,13 @@ export function AchievementBadges({
       const savedAchievements = localStorage.getItem('customAchievements');
       if (savedAchievements) {
         const customAchievements = JSON.parse(savedAchievements);
-        return customAchievements.map((custom: any) => ({
+        return customAchievements.map((custom: {
+          id: string;
+          title: string;
+          description: string;
+          requirement: number;
+          color: string;
+        }) => ({
           id: `custom-${custom.id}`,
           title: custom.title,
           description: custom.description,

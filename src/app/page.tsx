@@ -59,7 +59,6 @@ export default function Dashboard() {
     triggerCelebration,
     hideCelebration,
     updateAchievements,
-    updateReminderSettings,
     calculateProgress,
   } = useAppStore();
 
@@ -88,20 +87,20 @@ export default function Dashboard() {
     if (!hasSeenOnboarding) {
       setShowOnboarding(true);
     }
-  }, []);
+  }, [fetchTodayEntry, fetchWeeklySummary, fetchCurrentStreak, updateAchievements, calculateProgress]);
 
   // Trigger celebrations when milestones are reached
   useEffect(() => {
     if (currentStreak > 0 && currentStreak % 7 === 0) {
       triggerCelebration('streak', currentStreak);
     }
-  }, [currentStreak]);
+  }, [currentStreak, triggerCelebration]);
 
   useEffect(() => {
     if (currentEntry && currentEntry.completion_percentage === 100) {
       triggerCelebration('perfect_day');
     }
-  }, [currentEntry?.completion_percentage]);
+  }, [currentEntry, triggerCelebration]);
 
   const activateDemoMode = () => {
     setIsDemoMode(true);
@@ -356,7 +355,7 @@ export default function Dashboard() {
             <CardHeader className="pb-4 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <CardTitle className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 to-blue-900 dark:from-white dark:to-blue-200 bg-clip-text text-transparent">
-                  Today's Journey
+                  Today&apos;s Journey
                 </CardTitle>
                 <motion.div 
                   className="flex items-center gap-3"
@@ -579,7 +578,7 @@ export default function Dashboard() {
                     <Heart className="w-5 h-5 text-pink-600 dark:text-pink-400" />
                   </div>
                   <span className="bg-gradient-to-r from-pink-600 to-rose-600 dark:from-pink-400 dark:to-rose-400 bg-clip-text text-transparent">
-                    Today's Gratitude
+                    Today&apos;s Gratitude
                   </span>
                 </h3>
                 {currentEntry?.gratitude_entry ? (
@@ -590,7 +589,7 @@ export default function Dashboard() {
                     transition={{ duration: 0.6 }}
                   >
                     <p className="text-sm text-gray-700 dark:text-gray-300 italic text-center leading-relaxed">
-                      "{currentEntry.gratitude_entry}"
+                      &quot;{currentEntry.gratitude_entry}&quot;
                     </p>
                   </motion.div>
                 ) : (
@@ -602,7 +601,7 @@ export default function Dashboard() {
                     >
                       <Heart className="w-12 h-12 text-pink-300 dark:text-pink-600 mx-auto mb-3" />
                       <p className="text-gray-500 dark:text-gray-400 text-sm">
-                        Share what you're grateful for today
+                        Share what you&apos;re grateful for today
                       </p>
                     </motion.div>
                     <Button 
@@ -647,7 +646,6 @@ export default function Dashboard() {
         completedSessions={sessions.filter(s => s.isCompleted).map(s => s.id)}
         currentTime={new Date()}
         settings={motivation.reminderSettings}
-        onUpdateSettings={updateReminderSettings}
       />
       
       {/* Show demo mode overlay if active */}

@@ -21,7 +21,6 @@ export function DailyReminderEmail({
   completionPercentage
 }: DailyReminderEmailProps) {
   const dayNumber = 90 - daysRemaining + 1;
-  const isOnTrack = progress.goalProgress >= (dayNumber / 90) * 100;
   
   const getMotivationMessage = () => {
     if (completionPercentage === 0) {
@@ -55,6 +54,7 @@ export function DailyReminderEmail({
 
   return (
     <html>
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <style>{`
           body { 
@@ -233,7 +233,7 @@ export function DailyReminderEmail({
             </div>
             <div className="stat-card">
               <span className="stat-number">{completionPercentage}%</span>
-              <div className="stat-label">Today's Progress</div>
+              <div className="stat-label">Today&apos;s Progress</div>
             </div>
             <div className="stat-card">
               <span className="stat-number">{Math.round(progress.goalProgress)}%</span>
@@ -242,12 +242,12 @@ export function DailyReminderEmail({
           </div>
 
           <div className="task-section">
-            <h2 className="task-title">Today's Mission</h2>
+            <h2 className="task-title">Today&apos;s Mission</h2>
             <div className="progress-bar">
               <div className="progress-fill" style={{width: `${completionPercentage}%`}}></div>
             </div>
             <p style={{textAlign: 'center', color: '#64748b', fontSize: '16px'}}>
-              You've completed <strong>{progress.completedTasks} out of {progress.totalTasks}</strong> tasks today.
+              You&apos;ve completed <strong>{progress.completedTasks} out of {progress.totalTasks}</strong> tasks today.
             </p>
             
             <div style={{textAlign: 'center', margin: '30px 0'}}>
@@ -259,16 +259,16 @@ export function DailyReminderEmail({
 
           <div className="family-reminder">
             <div className="family-text">
-              Remember what you're fighting for:
+              Remember what you&apos;re fighting for:
             </div>
             <div className="family-goal">
-              "{familyGoal}"
+              &quot;{familyGoal}&quot;
             </div>
           </div>
 
           <div className="footer">
             <p>Every step forward is a step closer to the life they deserve.</p>
-            <p><small>Personal Growth Dashboard • You've got this, {userName}! 💪</small></p>
+            <p><small>Personal Growth Dashboard • You&apos;ve got this, {userName}! 💪</small></p>
           </div>
         </div>
       </body>

@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getInitialSession();
 
     // Set up auth state listener
-    let subscription: any = null;
+    let subscription: { unsubscribe: () => void } | null = null;
     
     try {
       const { data } = supabase.auth.onAuthStateChange(

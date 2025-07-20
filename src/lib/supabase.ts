@@ -12,58 +12,58 @@ const createMockClient = () => {
   // Create a chainable query builder
   const createQueryBuilder = () => {
     const builder = {
-      select: (columns?: string) => builder,
-      insert: (data: any) => builder,
-      update: (data: any) => builder,
+      select: () => builder,
+      insert: () => builder,
+      update: () => builder,
       delete: () => builder,
-      eq: (column: string, value: any) => builder,
-      neq: (column: string, value: any) => builder,
-      gt: (column: string, value: any) => builder,
-      gte: (column: string, value: any) => builder,
-      lt: (column: string, value: any) => builder,
-      lte: (column: string, value: any) => builder,
-      like: (column: string, pattern: string) => builder,
-      ilike: (column: string, pattern: string) => builder,
-      is: (column: string, value: any) => builder,
-      in: (column: string, values: any[]) => builder,
-      contains: (column: string, value: any) => builder,
-      containedBy: (column: string, value: any) => builder,
-      rangeGt: (column: string, value: any) => builder,
-      rangeGte: (column: string, value: any) => builder,
-      rangeLt: (column: string, value: any) => builder,
-      rangeLte: (column: string, value: any) => builder,
-      rangeAdjacent: (column: string, value: any) => builder,
-      overlaps: (column: string, value: any) => builder,
-      textSearch: (column: string, query: string) => builder,
-      match: (query: any) => builder,
-      not: (column: string, operator: string, value: any) => builder,
-      or: (filters: string) => builder,
-      and: (filters: string) => builder,
-      filter: (column: string, operator: string, value: any) => builder,
-      order: (column: string, options?: any) => builder,
-      limit: (count: number) => builder,
-      range: (from: number, to: number) => builder,
+      eq: () => builder,
+      neq: () => builder,
+      gt: () => builder,
+      gte: () => builder,
+      lt: () => builder,
+      lte: () => builder,
+      like: () => builder,
+      ilike: () => builder,
+      is: () => builder,
+      in: () => builder,
+      contains: () => builder,
+      containedBy: () => builder,
+      rangeGt: () => builder,
+      rangeGte: () => builder,
+      rangeLt: () => builder,
+      rangeLte: () => builder,
+      rangeAdjacent: () => builder,
+      overlaps: () => builder,
+      textSearch: () => builder,
+      match: () => builder,
+      not: () => builder,
+      or: () => builder,
+      and: () => builder,
+      filter: () => builder,
+      order: () => builder,
+      limit: () => builder,
+      range: () => builder,
       single: () => Promise.resolve({ data: null, error: new Error('Demo mode - no data') }),
       maybeSingle: () => Promise.resolve({ data: null, error: null }),
-      then: (resolve: Function) => {
+      then: (resolve: (value: { data: unknown[]; error: null }) => void): Promise<{ data: unknown[]; error: null }> => {
         // Return a promise-like response for demo mode
         resolve({ data: [], error: null });
         return Promise.resolve({ data: [], error: null });
       },
-      catch: (reject: Function) => Promise.resolve({ data: [], error: null })
+      catch: (): Promise<{ data: unknown[]; error: null }> => Promise.resolve({ data: [], error: null })
     };
     return builder;
   };
 
   return {
-    from: (table: string) => createQueryBuilder(),
-    rpc: (fn: string, params?: any) => Promise.resolve({ data: 0, error: null }),
+    from: () => createQueryBuilder(),
+    rpc: () => Promise.resolve({ data: 0, error: null }),
     auth: {
       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
       signOut: () => Promise.resolve({ error: null }),
       signIn: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
       signUp: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
-      onAuthStateChange: (callback: any) => {
+      onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
         // Mock subscription object
         const subscription = {
           unsubscribe: () => {},
@@ -79,7 +79,7 @@ const createMockClient = () => {
 }
 
 export const supabase = isDemoMode 
-  ? createMockClient() as any
+  ? createMockClient() as unknown as ReturnType<typeof createClient<Database>>
   : createClient<Database>(supabaseUrl!, supabaseAnonKey!, {
       auth: {
         persistSession: true,
@@ -88,11 +88,12 @@ export const supabase = isDemoMode
     })
 
 // Helper function to handle Supabase errors
-export const handleSupabaseError = (error: any) => {
+export const handleSupabaseError = (error: unknown) => {
   console.error('Supabase error:', error)
+  const err = error as { message?: string; code?: string }
   return {
-    error: error.message || 'An unexpected error occurred',
-    code: error.code || 'UNKNOWN_ERROR'
+    error: err.message || 'An unexpected error occurred',
+    code: err.code || 'UNKNOWN_ERROR'
   }
 }
 

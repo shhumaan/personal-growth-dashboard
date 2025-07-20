@@ -1,11 +1,6 @@
 // WhatsApp Integration - Send messages to your phone instantly
 // Uses WhatsApp Business API or simple web WhatsApp links
 
-interface WhatsAppMessage {
-  phoneNumber: string;
-  message: string;
-  urgent?: boolean;
-}
 
 interface UserProgress {
   completedTasks: number;

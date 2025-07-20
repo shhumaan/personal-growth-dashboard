@@ -11,12 +11,7 @@ import {
   Circle, 
   Target, 
   Clock, 
-  Zap, 
-  Trash2,
-  Edit3,
-  ArrowUp,
-  ArrowDown,
-  Flag
+  Trash2
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 
@@ -35,7 +30,6 @@ interface DailyTask {
 }
 
 interface DailyTasksProps {
-  date?: Date;
   onTaskComplete?: (taskId: string) => void;
 }
 
@@ -54,12 +48,10 @@ const CATEGORY_COLORS = {
 };
 
 export const DailyTasks: React.FC<DailyTasksProps> = ({ 
-  date = new Date(), 
   onTaskComplete 
 }) => {
   const [tasks, setTasks] = useState<DailyTask[]>([]);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingTask, setEditingTask] = useState<DailyTask | null>(null);
   const [newTask, setNewTask] = useState<Partial<DailyTask>>({
     title: '',
     description: '',
@@ -68,7 +60,7 @@ export const DailyTasks: React.FC<DailyTasksProps> = ({
     estimatedTime: 30
   });
 
-  const { currentEntry, updateEntry } = useAppStore();
+  const { currentEntry } = useAppStore();
 
   // Load tasks from localStorage or default tasks
   useEffect(() => {
@@ -203,7 +195,7 @@ export const DailyTasks: React.FC<DailyTasksProps> = ({
         <div className="flex items-center justify-between">
           <CardTitle className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent flex items-center gap-2">
             <Target className="w-5 h-5" />
-            Today's Tasks
+            Today&apos;s Tasks
           </CardTitle>
           <div className="flex items-center gap-3">
             <Badge variant="outline" className="text-sm">
@@ -273,7 +265,7 @@ export const DailyTasks: React.FC<DailyTasksProps> = ({
                   </select>
                   <select
                     value={newTask.category}
-                    onChange={(e) => setNewTask({ ...newTask, category: e.target.value as any })}
+                    onChange={(e) => setNewTask({ ...newTask, category: e.target.value as 'work' | 'health' | 'learning' | 'personal' | 'finance' })}
                     className="px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="work">Work</option>

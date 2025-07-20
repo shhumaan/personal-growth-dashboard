@@ -17,18 +17,14 @@ import { supabase } from '@/lib/supabase';
 import { Auth } from '@/components/auth';
 import { 
   ArrowLeft, 
-  Settings, 
   Target, 
   Trophy, 
   Plus, 
   X, 
   Bell, 
-  Moon, 
   Sun,
   Save,
   Trash2,
-  Mail,
-  Timer,
   MessageCircle,
   Send,
   BellRing,
@@ -57,8 +53,8 @@ interface CustomAchievement {
 
 export default function SettingsPage() {
   const { toast } = useToast();
-  const [isAuthenticating, setIsAuthenticating] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [, setIsAuthenticating] = useState(true);
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
   const [storageType, setStorageType] = useState<'localStorage' | 'database'>('localStorage');
   const [isMigrating, setIsMigrating] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
@@ -80,7 +76,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
         setIsAuthenticating(false);
 
@@ -108,7 +104,14 @@ export default function SettingsPage() {
             
             if (dbData.goals && dbData.goals.length > 0) {
               // Convert database goals to localStorage format
-              const convertedGoals = dbData.goals.map((goal: any) => ({
+              const convertedGoals = dbData.goals.map((goal: {
+                id: string;
+                title: string;
+                description?: string;
+                target_value?: number;
+                current_value?: number;
+                category: string;
+              }) => ({
                 id: goal.id,
                 title: goal.title,
                 description: goal.description || '',
@@ -648,7 +651,7 @@ export default function SettingsPage() {
                     }}
                     className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500/20"
                   />
-                  <p className="text-xs text-gray-500 dark:text-gray-400">This is how you'll be addressed in notifications</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">This is how you&apos;ll be addressed in notifications</p>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
@@ -684,8 +687,8 @@ export default function SettingsPage() {
                 </h4>
                 <div className="text-sm text-blue-800 dark:text-blue-300">
                   <p className="mb-1">
-                    "Hello <strong className="text-blue-900 dark:text-blue-200">{personalInfo.name || 'Champion'}</strong>! 
-                    Ready to work toward your goal: <em>'{personalInfo.familyGoal || 'Build a better future for my family'}'</em>?"
+                    &quot;Hello <strong className="text-blue-900 dark:text-blue-200">{personalInfo.name || 'Champion'}</strong>! 
+                    Ready to work toward your goal: <em>&apos;{personalInfo.familyGoal || 'Build a better future for my family'}&apos;</em>?&quot;
                   </p>
                 </div>
               </div>

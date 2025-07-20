@@ -50,6 +50,7 @@ export function WeeklyReportEmail({
 
   return (
     <html>
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <style>{`
           body { 
@@ -187,7 +188,7 @@ export function WeeklyReportEmail({
 
           {progress.recentAchievements.length > 0 && (
             <div className="achievements-section">
-              <h3 style={{color: '#1e293b', marginBottom: '20px'}}>🏆 This Week's Wins</h3>
+              <h3 style={{color: '#1e293b', marginBottom: '20px'}}>🏆 This Week&apos;s Wins</h3>
               {progress.recentAchievements.map((achievement, index) => (
                 <div key={index} className="achievement-item">
                   {achievement}
@@ -201,7 +202,7 @@ export function WeeklyReportEmail({
               Remember Your Why:
             </h3>
             <div style={{fontSize: '18px', color: '#78350f', fontWeight: '700', fontStyle: 'italic'}}>
-              "{familyGoal}"
+              &quot;{familyGoal}&quot;
             </div>
           </div>
 
@@ -210,15 +211,15 @@ export function WeeklyReportEmail({
             <div className="insights-text">
               {isOnTrack ? (
                 <>
-                  <p><strong>What's Working:</strong> Your consistency is paying off. You're building the habits that will transform your family's future.</p>
+                  <p><strong>What&apos;s Working:</strong> Your consistency is paying off. You&apos;re building the habits that will transform your family&apos;s future.</p>
                   <p><strong>Keep Going:</strong> Maintain this momentum. Small daily actions are compounding into significant progress.</p>
                   <p><strong>Next Week Focus:</strong> Continue your current strategy while looking for opportunities to push even harder.</p>
                 </>
               ) : (
                 <>
-                  <p><strong>Reality Check:</strong> You're not where you need to be. Your family deserves better than excuses.</p>
-                  <p><strong>What Must Change:</strong> Identify what's holding you back and eliminate it. No more compromise.</p>
-                  <p><strong>This Week's Mission:</strong> Get back on track or risk failing the people who matter most.</p>
+                  <p><strong>Reality Check:</strong> You&apos;re not where you need to be. Your family deserves better than excuses.</p>
+                  <p><strong>What Must Change:</strong> Identify what&apos;s holding you back and eliminate it. No more compromise.</p>
+                  <p><strong>This Week&apos;s Mission:</strong> Get back on track or risk failing the people who matter most.</p>
                 </>
               )}
             </div>

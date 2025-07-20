@@ -57,7 +57,7 @@ export default function WeeklyPage() {
     { date: 'Sun', completion: 80, mood: 80, energy: 85, focus: 75 },
   ];
 
-  const handleDateClick = (date: Date, entry?: any) => {
+  const handleDateClick = (date: Date, entry?: { completion_percentage: number; id: string }) => {
     console.log('Date clicked:', date, entry);
     // Handle date click - could open a modal or navigate to day view
   };
@@ -181,7 +181,7 @@ export default function WeeklyPage() {
               
               <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                 <div className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">
-                  💡 This Week's Insight
+                  💡 This Week&apos;s Insight
                 </div>
                 <div className="text-xs text-blue-600 dark:text-blue-400">
                   You performed best on weekdays and showed consistent improvement in focus ratings. 

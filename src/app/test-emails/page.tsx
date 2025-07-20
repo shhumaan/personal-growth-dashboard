@@ -50,7 +50,7 @@ export default function TestEmailsPage() {
     }
   ];
 
-  const sendTestEmail = async (emailType: string, endpoint: string, payload?: any) => {
+  const sendTestEmail = async (emailType: string, endpoint: string, payload?: Record<string, unknown>) => {
     setIsLoading(prev => ({ ...prev, [emailType]: true }));
     setTestResults(prev => ({ ...prev, [emailType]: 'pending' }));
 

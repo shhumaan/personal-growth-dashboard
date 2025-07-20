@@ -38,7 +38,7 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
     };
     
     checkUser();
-  }, []);
+  }, [onLogin]);
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,8 +62,9 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       
       if (error) throw error;
       onLogin();
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign in');
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error.message || 'Failed to sign in');
     } finally {
       setLoading(false);
     }
@@ -96,8 +97,9 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       if (error) throw error;
       setView('sign-in');
       alert('Check your email for the confirmation link');
-    } catch (err: any) {
-      setError(err.message || 'Failed to sign up');
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error.message || 'Failed to sign up');
     } finally {
       setLoading(false);
     }
@@ -127,8 +129,9 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
       
       if (error) throw error;
       setMagicLinkSent(true);
-    } catch (err: any) {
-      setError(err.message || 'Failed to send magic link');
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error.message || 'Failed to send magic link');
     } finally {
       setLoading(false);
     }
@@ -249,7 +252,7 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
               <div className="text-center w-full text-sm">
                 {view === 'sign-in' ? (
                   <p>
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <button
                       type="button"
                       onClick={() => setView('sign-up')}

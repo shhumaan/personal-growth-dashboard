@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { Card, CardContent } from '../ui/card'
 import { ProgressRing } from '../ui/progress-ring'
 import { motion } from 'framer-motion'
 import { TrendingUp, Target, Calendar, Zap } from 'lucide-react'

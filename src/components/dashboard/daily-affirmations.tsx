@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, RefreshCw, Heart, Star, Zap, Target } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,14 +8,12 @@ import { Button } from '@/components/ui/button';
 
 interface DailyAffirmationsProps {
   mood?: number;
-  goals?: string[];
   currentStreak?: number;
   className?: string;
 }
 
 export function DailyAffirmations({ 
   mood = 5, 
-  goals = [], 
   currentStreak = 0,
   className = '' 
 }: DailyAffirmationsProps) {
@@ -103,7 +101,7 @@ export function DailyAffirmations({
 
   const personalizedAffirmations = getPersonalizedAffirmations();
 
-  const changeAffirmation = () => {
+  const changeAffirmation = useCallback(() => {
     setIsChanging(true);
     setTimeout(() => {
       setCurrentAffirmation(prev => 
@@ -111,7 +109,7 @@ export function DailyAffirmations({
       );
       setIsChanging(false);
     }, 200);
-  };
+  }, [personalizedAffirmations.length]);
 
   // Auto-rotate affirmations every 10 seconds
   useEffect(() => {
@@ -120,7 +118,7 @@ export function DailyAffirmations({
     }, 10000);
     
     return () => clearInterval(interval);
-  }, [personalizedAffirmations.length]);
+  }, [changeAffirmation]);
 
   const getAffirmationIcon = () => {
     if (mood <= 3) return Heart;
@@ -158,7 +156,7 @@ export function DailyAffirmations({
               </div>
               
               <blockquote className="text-lg font-medium text-gray-800 dark:text-gray-200 leading-relaxed">
-                "{personalizedAffirmations[currentAffirmation]}"
+                &quot;{personalizedAffirmations[currentAffirmation]}&quot;
               </blockquote>
               
               <div className="mt-4 flex items-center justify-center gap-2">

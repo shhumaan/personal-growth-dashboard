@@ -4,12 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { motion } from 'framer-motion';
 import { 
   Timer, 
   Target, 
   Calendar, 
-  Download,
   Edit3,
   Save,
   RefreshCw,
@@ -94,7 +92,7 @@ export const GoalTimerSettings: React.FC<GoalTimerSettingsProps> = ({
     }
   };
 
-  const handleInputChange = (field: keyof GoalTimerSettings, value: any) => {
+  const handleInputChange = (field: keyof GoalTimerSettings, value: string | number) => {
     setSettings(prev => ({
       ...prev,
       [field]: value
@@ -239,7 +237,7 @@ export const GoalTimerSettings: React.FC<GoalTimerSettingsProps> = ({
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
               <Heart className="w-4 h-4" />
-              Family Goal (What you're fighting for)
+              Family Goal (What you&apos;re fighting for)
             </label>
             {isEditing ? (
               <textarea
@@ -251,7 +249,7 @@ export const GoalTimerSettings: React.FC<GoalTimerSettingsProps> = ({
               />
             ) : (
               <div className="p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md italic font-medium text-gray-800 dark:text-gray-200">
-                "{settings.familyGoal}"
+                &quot;{settings.familyGoal}&quot;
               </div>
             )}
           </div>
@@ -425,8 +423,8 @@ export const GoalTimerSettings: React.FC<GoalTimerSettingsProps> = ({
             Current Sprint Overview
           </h4>
           <div className="text-sm text-blue-800 dark:text-blue-300 space-y-1">
-            <p>• <strong>{settings.userName}</strong> is working toward: "{settings.familyGoal}"</p>
-            <p>• {getDaysRemaining()} days remaining in "{settings.goalTitle}"</p>
+            <p>• <strong>{settings.userName}</strong> is working toward: &quot;{settings.familyGoal}&quot;</p>
+            <p>• {getDaysRemaining()} days remaining in &quot;{settings.goalTitle}&quot;</p>
             <p>• Daily reminders at {settings.reminderTimes.morning}, {settings.reminderTimes.evening}</p>
             <p>• Motivation level: <span className="font-semibold">{motivationLevels.find(l => l.value === settings.motivationLevel)?.label}</span></p>
           </div>

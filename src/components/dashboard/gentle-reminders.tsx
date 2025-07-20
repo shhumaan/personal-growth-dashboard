@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Clock, Heart, Coffee, Sunset, Moon, X, Settings } from 'lucide-react';
+import { Clock, Coffee, Sunset, Moon, X, Settings } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +18,6 @@ interface GentleRemindersProps {
   completedSessions: string[];
   currentTime: Date;
   settings?: ReminderSettings;
-  onUpdateSettings?: (settings: ReminderSettings) => void;
   className?: string;
 }
 
@@ -31,7 +30,6 @@ export function GentleReminders({
     quietHours: { start: '22:00', end: '07:00' },
     customMessages: []
   },
-  onUpdateSettings,
   className = ''
 }: GentleRemindersProps) {
   const [activeReminder, setActiveReminder] = useState<string | null>(null);
@@ -39,7 +37,7 @@ export function GentleReminders({
   const [showSettings, setShowSettings] = useState(false);
 
   // Define session times and their corresponding reminders
-  const sessionSchedule = [
+  const sessionSchedule = useMemo(() => [
     {
       id: 'morning',
       name: 'Morning Power-Up',
@@ -88,10 +86,10 @@ export function GentleReminders({
         "Bedtime accountability! 🙏 End your day with gratitude.",
       ]
     }
-  ];
+  ], []);
 
   // Check if current time is within quiet hours
-  const isQuietTime = () => {
+  const isQuietTime = useCallback(() => {
     const currentHour = currentTime.getHours();
     const currentMinute = currentTime.getMinutes();
     const currentTimeString = `${currentHour.toString().padStart(2, '0')}:${currentMinute.toString().padStart(2, '0')}`;
@@ -105,28 +103,28 @@ export function GentleReminders({
     
     // Handle same-day quiet hours (e.g., 13:00 to 14:00)
     return currentTimeString >= start && currentTimeString <= end;
-  };
+  }, [currentTime, settings.quietHours]);
 
   // Get current session based on time
-  const getCurrentSession = () => {
+  const getCurrentSession = useCallback(() => {
     const currentHour = currentTime.getHours();
     return sessionSchedule.find(session => 
       currentHour >= session.timeRange.start && currentHour < session.timeRange.end
     );
-  };
+  }, [currentTime, sessionSchedule]);
 
   // Get reminder frequency timing
-  const getReminderInterval = () => {
+  const getReminderInterval = useCallback(() => {
     switch (settings.frequency) {
       case 'gentle': return 60 * 60 * 1000; // 1 hour
       case 'normal': return 30 * 60 * 1000; // 30 minutes
       case 'persistent': return 15 * 60 * 1000; // 15 minutes
       default: return 30 * 60 * 1000;
     }
-  };
+  }, [settings.frequency]);
 
   // Check if reminder should be shown
-  const shouldShowReminder = () => {
+  const shouldShowReminder = useCallback(() => {
     if (!settings.enabled || isQuietTime()) return false;
     
     const currentSession = getCurrentSession();
@@ -136,7 +134,7 @@ export function GentleReminders({
     const isReminderDismissed = dismissedReminders.has(currentSession.id);
     
     return !isSessionCompleted && !isReminderDismissed;
-  };
+  }, [settings.enabled, isQuietTime, getCurrentSession, completedSessions, dismissedReminders]);
 
   // Get random message for current session
   const getCurrentMessage = () => {
@@ -165,7 +163,7 @@ export function GentleReminders({
     }, getReminderInterval());
     
     return () => clearInterval(interval);
-  }, [completedSessions, dismissedReminders, settings, currentTime]);
+  }, [shouldShowReminder, getCurrentSession, getReminderInterval]);
 
   const dismissReminder = (sessionId: string) => {
     setDismissedReminders(prev => new Set(Array.from(prev).concat(sessionId)));

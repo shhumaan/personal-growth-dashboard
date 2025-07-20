@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,9 +8,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Timer, 
   Target, 
-  Calendar, 
-  Zap, 
-  Clock,
   Edit3,
   CheckCircle2,
   AlertCircle,
@@ -57,7 +54,9 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
   );
 
   // Default to 90 days from now if no target date
-  const defaultTargetDate = targetDate || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+  const defaultTargetDate = useMemo(() => {
+    return targetDate || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000);
+  }, [targetDate]);
 
   const calculateTimeRemaining = (target: Date): TimeRemaining => {
     const now = new Date().getTime();
@@ -256,7 +255,7 @@ export const CountdownTimer: React.FC<CountdownTimerProps> = ({
           <div className="text-center py-8">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-2xl font-bold text-red-600 dark:text-red-400 mb-2">
-              Time's Up!
+              Time&apos;s Up!
             </h2>
             <p className="text-gray-600 dark:text-gray-400">
               Your 90-day sprint has ended. Time to celebrate and plan your next goal!

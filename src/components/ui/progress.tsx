@@ -12,7 +12,7 @@ const Progress = React.forwardRef<
     value?: number
     max?: number
   }
->(({ className, value = 0, max = 100, ...props }, ref) => (
+>(({ className, value = 0, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(

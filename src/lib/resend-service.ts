@@ -69,7 +69,7 @@ class ResendEmailService {
     if (!settings.enabledTypes.weeklyReports) return false;
 
     try {
-      const { data, error } = await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: 'Your Growth Coach <noreply@yourdomain.com>',
         to: [settings.userEmail],
         subject: `Week ${Math.ceil((90 - progress.daysRemaining) / 7)} Report: ${this.getWeeklyMotivation(progress)}`,
@@ -99,7 +99,7 @@ class ResendEmailService {
     if (!settings.enabledTypes.milestoneAlerts) return false;
 
     try {
-      const { data, error } = await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: 'Your Growth Coach <noreply@yourdomain.com>',
         to: [settings.userEmail],
         subject: `🎉 MILESTONE ACHIEVED: ${milestone}!`,
@@ -130,7 +130,7 @@ class ResendEmailService {
     if (progress.missedDays < 2) return false; // Only send after 2+ missed days
 
     try {
-      const { data, error } = await resend.emails.send({
+      const { error } = await resend.emails.send({
         from: 'Your Growth Coach <noreply@yourdomain.com>',
         to: [settings.userEmail],
         subject: this.getAccountabilitySubject(progress),
@@ -139,7 +139,6 @@ class ResendEmailService {
           familyGoal: settings.familyGoal,
           missedDays: progress.missedDays,
           daysRemaining: progress.daysRemaining,
-          currentStreak: progress.currentStreak,
           severity: this.getAccountabilitySeverity(progress.missedDays)
         }),
       });
@@ -184,7 +183,7 @@ class ResendEmailService {
   }
 
   private getAccountabilitySubject(progress: UserProgress): string {
-    const { missedDays, daysRemaining } = progress;
+    const { missedDays } = progress;
     
     if (missedDays >= 7) {
       return "🚨 WAKE UP! Your family's future is slipping away...";

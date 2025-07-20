@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Plus, Calendar, TrendingUp, CheckCircle, Clock, Star, Filter } from 'lucide-react';
+import { Target, Plus, Calendar, TrendingUp, CheckCircle, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +31,6 @@ interface GoalsSectionProps {
 export function GoalsSection({ className = '' }: GoalsSectionProps) {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('active');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
 
   // Load goals from local storage (settings page custom goals)
@@ -41,7 +40,14 @@ export function GoalsSection({ className = '' }: GoalsSectionProps) {
       if (savedCustomGoals) {
         const customGoals = JSON.parse(savedCustomGoals);
         // Convert custom goals to goals format
-        const convertedGoals: Goal[] = customGoals.map((goal: any) => ({
+        const convertedGoals: Goal[] = customGoals.map((goal: {
+          id: string;
+          title: string;
+          description?: string;
+          category: string;
+          currentValue: number;
+          targetValue: number;
+        }) => ({
           id: goal.id,
           title: goal.title,
           description: goal.description,
@@ -66,11 +72,9 @@ export function GoalsSection({ className = '' }: GoalsSectionProps) {
 
   const filteredGoals = goals.filter(goal => {
     const statusMatch = filter === 'all' || goal.status === filter;
-    const categoryMatch = categoryFilter === 'all' || goal.category === categoryFilter;
-    return statusMatch && categoryMatch;
+    return statusMatch;
   });
 
-  const categories = ['all', 'personal', 'career', 'health', 'learning', 'financial', 'relationships'];
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -168,7 +172,7 @@ export function GoalsSection({ className = '' }: GoalsSectionProps) {
                 key={status}
                 size="sm"
                 variant={filter === status ? "default" : "outline"}
-                onClick={() => setFilter(status as any)}
+                onClick={() => setFilter(status as 'all' | 'active' | 'completed')}
                 className="text-xs"
               >
                 {status.charAt(0).toUpperCase() + status.slice(1)}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Clock, ChevronUp, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -48,22 +48,22 @@ export const TimePicker = ({
   };
 
   // Format minutes with leading zero
-  const formatMinutes = () => {
+  const formatMinutes = useCallback(() => {
     return minutes < 10 ? `0${minutes}` : minutes;
-  };
+  }, [minutes]);
 
   // Convert to 24-hour format for the hidden input
-  const formatTimeFor24Hour = () => {
+  const formatTimeFor24Hour = useCallback(() => {
     let hrs = hours;
     if (period === 'PM' && hrs < 12) hrs += 12;
     if (period === 'AM' && hrs === 12) hrs = 0;
     return `${hrs < 10 ? '0' + hrs : hrs}:${formatMinutes()}`;
-  };
+  }, [hours, period, formatMinutes]);
 
   // Update the parent's state when our internal state changes
   useEffect(() => {
     onChange(formatTimeFor24Hour());
-  }, [hours, minutes, period]);
+  }, [hours, minutes, period, onChange, formatTimeFor24Hour]);
 
   // Initialize from prop value
   useEffect(() => {

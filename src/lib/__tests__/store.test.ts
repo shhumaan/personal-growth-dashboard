@@ -8,7 +8,7 @@ const localStorageMock = {
   clear: jest.fn(),
 };
 
-global.localStorage = localStorageMock as any;
+global.localStorage = localStorageMock as unknown as Storage;
 
 // Mock Supabase
 jest.mock('../supabase', () => ({
@@ -56,7 +56,18 @@ describe('Store', () => {
       
       // Mock current entry
       useAppStore.setState({ 
-        currentEntry: { id: 'test-id', date: '2024-01-15' } as any 
+        currentEntry: { 
+          id: 'test-id', 
+          date: '2024-01-15',
+          user_id: 'test-user',
+          session_1_morning: false,
+          session_2_midday: false,
+          session_3_evening: false,
+          session_4_bedtime: false,
+          completion_percentage: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
       });
       
       await store.updateEntry(mockEntry);
@@ -93,7 +104,7 @@ describe('Store', () => {
 
     it('should handle errors gracefully', async () => {
       // Mock error scenario
-      const { supabase } = require('../supabase');
+      const { supabase } = await import('../supabase');
       supabase.from.mockReturnValue({
         select: jest.fn().mockReturnThis(),
         eq: jest.fn().mockReturnThis(),
@@ -199,11 +210,16 @@ describe('Store', () => {
       useAppStore.setState({
         currentEntry: { 
           id: 'demo-entry',
+          date: '2024-01-15',
+          user_id: 'test-user',
           session_1_morning: true,
           session_2_midday: false,
           session_3_evening: true,
           session_4_bedtime: false,
-        } as any
+          completion_percentage: 50,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
       });
       
       await store.updateEntry({ session_1_morning: true, session_2_midday: true });
@@ -236,7 +252,17 @@ describe('Store', () => {
         { date: '2024-01-13', completion_percentage: 50 },
       ];
       
-      useAppStore.setState({ entries: entries as any });
+      useAppStore.setState({ entries: entries.map(entry => ({
+        ...entry,
+        id: `entry-${entry.date}`,
+        user_id: 'test-user',
+        session_1_morning: false,
+        session_2_midday: false,
+        session_3_evening: false,
+        session_4_bedtime: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })) });
       
       store.calculateProgress();
       

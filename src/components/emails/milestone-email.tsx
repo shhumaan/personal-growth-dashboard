@@ -18,6 +18,7 @@ export function MilestoneEmail({
   
   return (
     <html>
+      {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
         <style>{`
           body { 
@@ -155,7 +156,7 @@ export function MilestoneEmail({
               {Math.round(progress)}%
             </div>
             <p style={{color: '#78350f', fontSize: '18px', fontWeight: '600'}}>
-              You're making real progress toward your family's dreams!
+              You&apos;re making real progress toward your family&apos;s dreams!
             </p>
           </div>
 
@@ -172,10 +173,10 @@ export function MilestoneEmail({
 
           <div className="family-celebration">
             <div className="family-header">
-              🏆 YOU'RE BUILDING THE LIFE THEY DESERVE! 🏆
+              🏆 YOU&apos;RE BUILDING THE LIFE THEY DESERVE! 🏆
             </div>
             <div className="family-goal">
-              "{familyGoal}"
+              &quot;{familyGoal}&quot;
             </div>
             <p style={{color: '#065f46', fontSize: '16px', fontWeight: '600'}}>
               This milestone brings you one giant step closer to making this a reality!
@@ -187,18 +188,18 @@ export function MilestoneEmail({
               🌟 Take a Moment to Celebrate
             </h3>
             <p style={{color: '#374151', fontSize: '16px', lineHeight: '1.6'}}>
-              <strong>{userName}</strong>, you've just achieved something significant! This isn't just a milestone - 
-              it's proof that you're committed to creating a better future for your family. 
+              <strong>{userName}</strong>, you&apos;ve just achieved something significant! This isn&apos;t just a milestone - 
+              it&apos;s proof that you&apos;re committed to creating a better future for your family. 
               They would be proud of your dedication and consistency.
             </p>
           </div>
 
           <div className="next-steps">
             <h3 style={{color: '#dc2626', fontSize: '20px', fontWeight: '700', marginBottom: '15px'}}>
-              🔥 Don't Stop Now - Keep The Momentum
+              🔥 Don&apos;t Stop Now - Keep The Momentum
             </h3>
             <div style={{color: '#374151', fontSize: '16px', lineHeight: '1.6'}}>
-              <p><strong>What This Means:</strong> You've proven you can do this. Your family's future is getting brighter with every step.</p>
+              <p><strong>What This Means:</strong> You&apos;ve proven you can do this. Your family&apos;s future is getting brighter with every step.</p>
               <p><strong>Next Focus:</strong> Use this momentum to push even harder. The next milestone is within reach.</p>
               <p><strong>Remember:</strong> Consistency beats perfection. Keep showing up every single day.</p>
             </div>
@@ -226,7 +227,7 @@ export function MilestoneEmail({
 
           <div style={{textAlign: 'center', padding: '30px', color: '#64748b', fontSize: '14px', background: '#f8fafc'}}>
             <p>Milestone achieved! Keep building the future your family deserves, {userName}! 🚀</p>
-            <p><small>Personal Growth Dashboard • You're unstoppable! 💪</small></p>
+            <p><small>Personal Growth Dashboard • You&apos;re unstoppable! 💪</small></p>
           </div>
         </div>
       </body>

@@ -44,7 +44,7 @@ class AppleCalendarService {
   }
 
   generateICS(events: CalendarEvent[]): string {
-    let ics = [
+    const ics = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'PRODID:-//Personal Growth Dashboard//90-Day Sprint//EN',
@@ -242,7 +242,7 @@ class AppleCalendarService {
   }
 
   // Generate calendar URL for Apple Calendar (webcal://)
-  generateCalendarURL(icsContent: string): string {
+  generateCalendarURL(): string {
     // In a real implementation, you'd host this .ics file on your server
     // and return a webcal:// URL that Apple Calendar can subscribe to
     
