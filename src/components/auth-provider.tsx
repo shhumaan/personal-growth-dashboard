@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isDemoMode } from '@/lib/supabase';
 import { Auth } from '@/components/auth';
 import { Loader2 } from 'lucide-react';
 
@@ -24,7 +24,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    // Initial session check
+    // In demo mode, simulate a logged-in user
+    if (isDemoMode) {
+      setUser({
+        id: 'demo-user',
+        email: 'demo@example.com'
+      });
+      setLoading(false);
+      setInitialized(true);
+      return;
+    }
+
+    // Initial session check for real Supabase
     const getInitialSession = async () => {
       try {
         const { data } = await supabase.auth.getSession();
@@ -42,21 +53,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getInitialSession();
 
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user || null);
-      }
-    );
+    let subscription: any = null;
+    
+    try {
+      const { data } = supabase.auth.onAuthStateChange(
+        (_event, session) => {
+          setUser(session?.user || null);
+        }
+      );
+      subscription = data.subscription;
+    } catch (error) {
+      console.error('Error setting up auth listener:', error);
+    }
 
     return () => {
-      subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
+      }
     };
   }, []);
 
   const signOut = async () => {
     setLoading(true);
     try {
-      await supabase.auth.signOut();
+      if (!isDemoMode) {
+        await supabase.auth.signOut();
+      }
       setUser(null);
     } catch (error) {
       console.error('Error signing out:', error);

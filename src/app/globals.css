@@ -4,26 +4,49 @@
 
 @layer base {
   :root {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
-    --muted: 223 47% 11%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --popover: 224 71% 4%;
-    --popover-foreground: 215 20.2% 65.1%;
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
-    --primary: 263 70% 50%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 222.2 84% 4.9%;
-    --secondary-foreground: 210 40% 98%;
-    --accent: 216 34% 17%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --ring: 263 70% 50%;
+    /* Light theme colors */
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
     --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 210 20% 98%;
+    --primary-foreground: 220.9 39.3% 11%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
   }
 }
 
@@ -38,29 +61,60 @@
 }
 
 @layer components {
-  .glass {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  .dashboard-card {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-0 shadow-xl transition-all duration-500 rounded-2xl;
   }
   
-  .glass-card {
-    @apply bg-white/5 backdrop-blur-lg border border-white/10 rounded-2xl shadow-xl;
+  .dashboard-card:hover {
+    @apply shadow-2xl scale-[1.02];
+  }
+  
+  .dashboard-grid {
+    @apply grid grid-cols-1 lg:grid-cols-3 gap-8;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-500 hover:scale-[1.03] hover:shadow-2xl hover:-translate-y-1;
+  }
+  
+  .progress-container {
+    @apply relative overflow-hidden;
+  }
+  
+  .stats-card {
+    @apply bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-0 shadow-xl rounded-2xl p-4 hover:shadow-2xl transition-all duration-500;
+  }
+  
+  .metric-card {
+    @apply bg-gradient-to-br from-white/90 to-gray-50/90 dark:from-gray-800/90 dark:to-gray-900/90 backdrop-blur-xl border-0 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500;
+  }
+  
+  .streak-indicator {
+    @apply inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold shadow-lg;
+  }
+  
+  .progress-ring {
+    @apply transition-all duration-1000 ease-out;
+  }
+  
+  .achievement-badge {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl border-2 rounded-2xl p-4 transition-all duration-500 hover:scale-110 shadow-xl;
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent;
   }
   
-  .animate-glow {
-    animation: glow 2s ease-in-out infinite alternate;
+  .section-header {
+    @apply flex items-center gap-3 text-xl font-bold text-gray-800 dark:text-gray-200 mb-6;
   }
   
-  @keyframes glow {
-    from {
-      box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
-    }
-    to {
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
-    }
+  .metric-value {
+    @apply text-3xl font-bold text-gray-900 dark:text-gray-100;
+  }
+  
+  .metric-label {
+    @apply text-sm text-gray-600 dark:text-gray-400 font-medium;
   }
   
   .scrollbar-hide {
@@ -82,9 +136,39 @@
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Focus styles for accessibility */
+  /* Enhanced focus styles for accessibility */
   .focus-visible {
-    @apply outline-none ring-2 ring-purple-500 ring-offset-2 ring-offset-transparent;
+    @apply outline-none ring-4 ring-blue-500/30 ring-offset-4 ring-offset-transparent;
+  }
+
+  /* Glass morphism effects */
+  .glass-card {
+    @apply bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border border-white/20 dark:border-gray-800/20;
+  }
+  
+  .glass-button {
+    @apply bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border border-white/30 dark:border-gray-700/30 hover:bg-white/80 dark:hover:bg-gray-800/80;
+  }
+  
+  /* Enhanced form styles */
+  .form-section {
+    @apply bg-gradient-to-br backdrop-blur-sm p-6 rounded-2xl border transition-all duration-500 hover:scale-[1.02];
+  }
+  
+  .form-input {
+    @apply bg-white/70 dark:bg-black/50 backdrop-blur-sm border-2 rounded-xl text-lg transition-all duration-300 focus:ring-4 focus:ring-opacity-30;
+  }
+  
+  .form-textarea {
+    @apply bg-white/70 dark:bg-black/50 backdrop-blur-sm border-2 rounded-xl resize-none text-lg placeholder:text-gray-500 dark:placeholder:text-gray-400 transition-all duration-300 focus:ring-4 focus:ring-opacity-30;
+  }
+  
+  .form-button-primary {
+    @apply w-full bg-gradient-to-r text-white shadow-xl hover:shadow-2xl transition-all duration-300 rounded-xl py-3 text-lg font-bold transform hover:scale-105 disabled:hover:scale-100;
+  }
+  
+  .form-button-secondary {
+    @apply w-full border-2 rounded-xl py-3 text-lg font-semibold transition-all duration-300 backdrop-blur-sm;
   }
 }
 
@@ -134,9 +218,129 @@
   }
 }
 
-/* Mobile responsive utilities */
+/* Responsive utilities for all devices */
 @media (max-width: 640px) {
   .mobile-safe {
     padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .dashboard-card {
+    @apply p-4;
+  }
+  
+  /* Compact spacing on mobile */
+  .mobile-compact {
+    gap: 1rem;
+  }
+  
+  /* Stack session cards vertically on mobile */
+  .mobile-stack {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) {
+  .tablet-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .desktop-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .desktop-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1280px) {
+  .large-desktop {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1920px) {
+  .max-content-width {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  
+  /* Better padding on very large screens */
+  .ultra-wide-padding {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Prevent horizontal overflow */
+.overflow-safe {
+  overflow-x: hidden;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Better grid responsive behavior */
+.responsive-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-grid {
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-grid {
+    gap: 1.5rem;
+  }
+}
+
+/* Ensure proper content spacing */
+.content-spacing {
+  padding: 1rem;
+}
+
+@media (min-width: 640px) {
+  .content-spacing {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .content-spacing {
+    padding: 2rem;
+  }
+}
+
+/* Prevent content from overflowing containers */
+.container-bounds {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Time picker dropdown should always appear on top */
+.time-picker-dropdown {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+/* Responsive text scaling */
+.responsive-text {
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-text {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-text {
+    font-size: 1.125rem;
   }
 }

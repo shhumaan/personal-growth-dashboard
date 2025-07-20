@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Clock, ChevronUp, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -36,6 +37,8 @@ export const TimePicker = ({
     value ? (parseInt(value.split(':')[0]) >= 12 ? 'PM' : 'AM') : 'AM'
   );
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 });
 
   // Format hours for display (12-hour format)
   const displayHours = () => {
@@ -64,14 +67,16 @@ export const TimePicker = ({
 
   // Initialize from prop value
   useEffect(() => {
-    if (value) {
+    if (value && value.includes(':')) {
       const [h, m] = value.split(':');
       const hourNum = parseInt(h);
-      setHours(hourNum);
-      setMinutes(parseInt(m));
-      setPeriod(hourNum >= 12 ? 'PM' : 'AM');
+      if (!isNaN(hourNum) && !isNaN(parseInt(m))) {
+        setHours(hourNum);
+        setMinutes(parseInt(m));
+        setPeriod(hourNum >= 12 ? 'PM' : 'AM');
+      }
     }
-  }, []);
+  }, [value]);
 
   // Click outside handling
   useEffect(() => {
@@ -120,11 +125,32 @@ export const TimePicker = ({
     setPeriod(prev => (prev === 'AM' ? 'PM' : 'AM'));
   };
 
+  // Calculate dropdown position
+  const calculatePosition = () => {
+    if (inputRef.current) {
+      const rect = inputRef.current.getBoundingClientRect();
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY + 4,
+        left: rect.left + window.scrollX,
+        width: rect.width
+      });
+    }
+  };
+
+  // Handle input click
+  const handleInputClick = () => {
+    if (!disabled) {
+      calculatePosition();
+      setIsOpen(!isOpen);
+    }
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <div 
+        ref={inputRef}
         className={`flex items-center relative ${disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'} ${className}`}
-        onClick={() => !disabled && setIsOpen(!isOpen)}
+        onClick={handleInputClick}
       >
         {label && (
           <label htmlFor={id} className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 block">
@@ -163,17 +189,25 @@ export const TimePicker = ({
         </div>
       </div>
 
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="absolute mt-1 w-full z-10 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
-          >
-            <div className="p-3">
-              <div className="flex justify-center gap-4">
+      {typeof window !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="time-picker-dropdown bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+              style={{
+                position: 'fixed',
+                top: dropdownPosition.top,
+                left: dropdownPosition.left,
+                width: dropdownPosition.width,
+                zIndex: 999999
+              }}
+            >
+              <div className="p-3">
+                <div className="flex justify-center gap-4">
                 {/* Hours Column */}
                 <div className="flex flex-col items-center">
                   <button
@@ -261,10 +295,10 @@ export const TimePicker = ({
                     PM
                   </button>
                 </div>
-              </div>
+                </div>
 
-              {/* Quick preset times */}
-              <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                {/* Quick preset times */}
+                <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                 <div className="grid grid-cols-3 gap-1">
                   {[
                     { label: 'Morning', time: '08:00' },
@@ -289,11 +323,13 @@ export const TimePicker = ({
                     </button>
                   ))}
                 </div>
+                </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };

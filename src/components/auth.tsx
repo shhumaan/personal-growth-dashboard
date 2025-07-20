@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, isDemoMode } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,9 +22,18 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
   // Check if user is already logged in
   useEffect(() => {
     const checkUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        onLogin();
+      if (isDemoMode) {
+        // Skip auth check in demo mode
+        return;
+      }
+      
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (data.session) {
+          onLogin();
+        }
+      } catch (error) {
+        console.error('Error checking session:', error);
       }
     };
     
@@ -37,6 +46,15 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
     setError(null);
     
     try {
+      if (isDemoMode) {
+        // In demo mode, just simulate a successful login
+        setTimeout(() => {
+          onLogin();
+          setLoading(false);
+        }, 500);
+        return;
+      }
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -57,6 +75,16 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
     setError(null);
     
     try {
+      if (isDemoMode) {
+        // In demo mode, just switch to sign-in view
+        setTimeout(() => {
+          setView('sign-in');
+          setLoading(false);
+          alert('Demo mode: Account created! You can now sign in.');
+        }, 500);
+        return;
+      }
+      
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -81,6 +109,15 @@ export const Auth: React.FC<AuthProps> = ({ onLogin }) => {
     setError(null);
     
     try {
+      if (isDemoMode) {
+        // In demo mode, simulate magic link sent
+        setTimeout(() => {
+          setMagicLinkSent(true);
+          setLoading(false);
+        }, 500);
+        return;
+      }
+      
       const { error } = await supabase.auth.signInWithOtp({
         email,
         options: {

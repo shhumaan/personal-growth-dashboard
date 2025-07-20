@@ -49,8 +49,8 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
       
       {/* Center text */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-2xl font-bold text-gray-900">
-          {Math.round(progress)}%
+        <span className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          {Math.min(Math.round(progress), 100)}%
         </span>
       </div>
     </div>

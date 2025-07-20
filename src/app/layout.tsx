@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { AuthProvider } from '@/components/auth-provider'
+import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,12 +32,15 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className={`${inter.className} antialiased min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900`}>
-        <div className="min-h-screen bg-black/20">
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-        </div>
+      <body className={`${inter.className} antialiased min-h-screen bg-background`}>
+        <ThemeProvider defaultTheme="system">
+          <div className="min-h-screen">
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </div>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   )
