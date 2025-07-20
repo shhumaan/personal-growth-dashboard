@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resendService } from '@/lib/resend-service';
 
+// Force dynamic route
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
+    // Check if email service is available
+    if (!process.env.RESEND_API_KEY) {
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const { userEmail, userName, familyGoal, missedDays, daysRemaining, currentStreak } = body;
 

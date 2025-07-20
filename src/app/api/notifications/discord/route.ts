@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { discordService } from '@/lib/discord-integration';
 
+// Force dynamic route
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
+    // Check if Discord service is configured
+    if (!process.env.DISCORD_BOT_TOKEN) {
+      return NextResponse.json(
+        { error: 'Discord service not configured' },
+        { status: 503 }
+      );
+    }
+
     const { progress, type } = await request.json();
 
     if (!progress) {

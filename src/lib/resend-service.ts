@@ -4,7 +4,20 @@ import { WeeklyReportEmail } from '@/components/emails/weekly-report-email';
 import { MilestoneEmail } from '@/components/emails/milestone-email';
 import { AccountabilityEmail } from '@/components/emails/accountability-email';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend: Resend | null = null;
+
+const getResend = (): Resend | null => {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY not found. Email service disabled.');
+    return null;
+  }
+  
+  if (!resend) {
+    resend = new Resend(process.env.RESEND_API_KEY);
+  }
+  
+  return resend;
+};
 
 interface UserProgress {
   completedTasks: number;
@@ -37,8 +50,14 @@ class ResendEmailService {
   async sendDailyReminder(settings: EmailSettings, progress: UserProgress): Promise<boolean> {
     if (!settings.enabledTypes.dailyReminders) return false;
 
+    const resendClient = getResend();
+    if (!resendClient) {
+      console.warn('Resend client not available. Daily reminder skipped.');
+      return false;
+    }
+
     try {
-      const { data, error } = await resend.emails.send({
+      const { data, error } = await resendClient.emails.send({
         from: 'Your Growth Coach <noreply@yourdomain.com>',
         to: [settings.userEmail],
         subject: this.getDailySubject(progress),
@@ -68,8 +87,14 @@ class ResendEmailService {
   async sendWeeklyReport(settings: EmailSettings, progress: UserProgress): Promise<boolean> {
     if (!settings.enabledTypes.weeklyReports) return false;
 
+    const resendClient = getResend();
+    if (!resendClient) {
+      console.warn('Resend client not available. Weekly report skipped.');
+      return false;
+    }
+
     try {
-      const { error } = await resend.emails.send({
+      const { error } = await resendClient.emails.send({
         from: 'Your Growth Coach <noreply@yourdomain.com>',
         to: [settings.userEmail],
         subject: `Week ${Math.ceil((90 - progress.daysRemaining) / 7)} Report: ${this.getWeeklyMotivation(progress)}`,
@@ -98,8 +123,14 @@ class ResendEmailService {
   async sendMilestone(settings: EmailSettings, milestone: string, progress: UserProgress): Promise<boolean> {
     if (!settings.enabledTypes.milestoneAlerts) return false;
 
+    const resendClient = getResend();
+    if (!resendClient) {
+      console.warn('Resend client not available. Milestone email skipped.');
+      return false;
+    }
+
     try {
-      const { error } = await resend.emails.send({
+      const { error } = await resendClient.emails.send({
         from: 'Your Growth Coach <noreply@yourdomain.com>',
         to: [settings.userEmail],
         subject: `🎉 MILESTONE ACHIEVED: ${milestone}!`,
@@ -129,8 +160,14 @@ class ResendEmailService {
     if (!settings.enabledTypes.accountabilityMessages) return false;
     if (progress.missedDays < 2) return false; // Only send after 2+ missed days
 
+    const resendClient = getResend();
+    if (!resendClient) {
+      console.warn('Resend client not available. Accountability message skipped.');
+      return false;
+    }
+
     try {
-      const { error } = await resend.emails.send({
+      const { error } = await resendClient.emails.send({
         from: 'Your Growth Coach <noreply@yourdomain.com>',
         to: [settings.userEmail],
         subject: this.getAccountabilitySubject(progress),

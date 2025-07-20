@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { whatsAppService } from '@/lib/whatsapp-integration';
 
+// Force dynamic route
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const { progress, type } = await request.json();
